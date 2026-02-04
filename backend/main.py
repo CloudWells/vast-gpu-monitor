@@ -57,7 +57,9 @@ def save_config(config: Config):
 current_config = load_config()
 last_results = {}
 known_ids = set()
-APP_PASSWORD = os.getenv("APP_PASSWORD", "change_me")
+APP_PASSWORD = os.getenv("APP_PASSWORD")
+if not APP_PASSWORD:
+    logger.error("APP_PASSWORD environment variable is not set!")
 SESSION_TOKEN = secrets.token_hex(16)
 
 # --- TELEGRAM BOT ---
