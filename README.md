@@ -23,9 +23,10 @@ The GPU rental market is highly competitive. New or low-priced instances are oft
 
 ### Setup
 1. Clone the repository.
-2. Create a `.env` file in the root directory and define your UI access password:
+2. Create a `.env` file in the root directory and define your UI access password and optional custom port:
    ```env
    APP_PASSWORD=your_chosen_secure_password
+   APP_PORT=1050
    ```
 3. Start the services:
    ```bash
@@ -33,7 +34,7 @@ The GPU rental market is highly competitive. New or low-priced instances are oft
    ```
 
 ### Configuration Guide
-1. **Access the Dashboard**: Open `http://your-server-ip:1050` and log in with username `admin` and your `APP_PASSWORD`.
+1. **Access the Dashboard**: Open `http://your-server-ip:APP_PORT` (default is 1050) and log in with username `admin` and your `APP_PASSWORD`.
 2. **Global Settings**:
    - **Vast.ai API Key**: Paste your API key from the Vast.ai console.
    - **TG Bot Token**: Paste the token received from @BotFather.

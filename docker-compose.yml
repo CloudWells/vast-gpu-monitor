@@ -15,7 +15,7 @@ services:
   frontend:
     build: ./frontend
     ports:
-      - "1050:80"
+      - "${APP_PORT:-1050}:80"
     depends_on:
       - backend
     restart: always
