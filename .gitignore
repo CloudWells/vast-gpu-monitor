@@ -1,0 +1,15 @@
+# Node.js
+node_modules/
+dist/
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+backend/data/
+vast_config/
+
+# OS
+.DS_Store
+Thumbs.db
