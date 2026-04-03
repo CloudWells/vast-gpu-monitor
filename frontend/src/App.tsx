@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Settings, Play, Square, Activity, Cpu, ShieldCheck, Globe, Trash2, Plus, Lock, LogOut } from 'lucide-react';
 
-const API_BASE = 'http://' + window.location.hostname + ':8000';
+const API_BASE = 'http://' + window.location.hostname + ':8001';
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
