@@ -74,6 +74,7 @@ async def start_bot():
         tg_app = ApplicationBuilder().token(current_config.tg_bot_token).build()
         tg_app.add_handler(CommandHandler("start", tg_start))
         tg_app.add_handler(CommandHandler("status", tg_status))
+        tg_app.add_handler(CommandHandler("rules", tg_rules))
         tg_app.add_handler(CallbackQueryHandler(tg_button_handler))
         await tg_app.initialize()
         await tg_app.start()
@@ -82,14 +83,42 @@ async def start_bot():
     except Exception as e:
         logger.error(f"Telegram Bot start failed: {e}")
 
+async def _update_chat_id(chat_id: int):
+    global current_config
+    if current_config.tg_chat_id != str(chat_id):
+        current_config.tg_chat_id = str(chat_id)
+        save_config(current_config)
+
 async def tg_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
-    msg = f"🖥 <b>GPU Monitor</b>\nYour ID: <code>{chat_id}</code>\n/status - Check monitoring status"
+    await _update_chat_id(chat_id)
+    msg = f"🖥 <b>GPU Monitor</b>\nYour ID: <code>{chat_id}</code>\n/status - Check monitoring status\n/rules - View monitoring rules"
     await update.message.reply_text(msg, parse_mode='HTML')
 
 async def tg_status(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
+    await _update_chat_id(chat_id)
     status = "🟢 ACTIVE" if current_config.is_running else "🔴 PAUSED"
-    msg = f"<b>Status:</b> {status}\n<b>Interval:</b> {current_config.check_interval}s\n<b>Rules:</b> {len(current_config.rules)}"
+    msg = f"<b>Status:</b> {status}\n<b>Interval:</b> {current_config.check_interval}s\n<b>Rules:</b> {len(current_config.rules)}\nUse /rules to view what we are looking for."
+    await update.message.reply_text(msg, parse_mode='HTML')
+
+async def tg_rules(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
+    await _update_chat_id(chat_id)
+    if not current_config.rules:
+        await update.message.reply_text("No rules configured.", parse_mode='HTML')
+        return
+    
+    msg = "<b>Current Rules:</b>\n\n"
+    for r in current_config.rules:
+        msg += f"🔹 <b>{r.gpu_name}</b> x{r.num_gpus}\n"
+        msg += f"Max Price: ${r.max_price}/hr\n"
+        if r.country:
+            msg += f"Country: {r.country}\n"
+        if r.min_duration > 0:
+            msg += f"Min Duration: {r.min_duration} hrs\n"
+        msg += "\n"
+    
     await update.message.reply_text(msg, parse_mode='HTML')
 
 async def tg_button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
